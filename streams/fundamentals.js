@@ -1,4 +1,4 @@
-import { Writable, Transform } from "stream"
+import { Writable, Transform } from "node:stream"
 
 class OneToHoundredStream extends Readable {
   index = 0

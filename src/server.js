@@ -1,26 +1,33 @@
-import http from "http";
+import http from "node:http";
+import crypto from "node:crypto";
+import { Database } from "./database.js";
+import { json } from "./middlewares/json.js";
 
-const users = []
+const database = new Database()
 
-let id = 0
-
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
   const { url, method } = req
 
+  await json(req, res)
+
   if (method === "GET" && url === "/users") {
-    return res
-    .setHeader("Content-Type", "application/json")
-    .end(JSON.stringify(users))
+    const users = database.select('users')
+
+    return res.end(JSON.stringify(users))
   }
 
   if (method === "POST" && url === "/users") {
-    users.push({
-      name: "Tom Cannon",
-      email: "hidoz@op.nu",
-      id: id++
-    })
+    const { name, email } = req.body
 
-    return res.writeHead(201).end("Criado")
+    const user = {
+      name,
+      email,
+      id: crypto.randomUUID()
+    }
+
+    database.insert('users', user)
+
+    return res.writeHead(201).end()
   }
 
   return res.writeHead(404).end("Heloo Wolrd")
