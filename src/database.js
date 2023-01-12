@@ -1,13 +1,12 @@
-import fs from "node:fs/promises"
+import fs from 'node:fs/promises'
 
-const databasePath = new URL("../db.json", import.meta.url)
- // import.meta.url -> caminho do arquivo que a instancia URL e chamada
+const databasePath = new URL('../db.json', import.meta.url)
 
 export class Database {
   #database = {}
 
   constructor() {
-    fs.readFile(databasePath, "utf-8")
+    fs.readFile(databasePath, 'utf8')
       .then(data => {
         this.#database = JSON.parse(data)
       })
@@ -20,8 +19,16 @@ export class Database {
     fs.writeFile(databasePath, JSON.stringify(this.#database))
   }
 
-  select(table) {
-    const data = this.#database[table] ?? []
+  select(table, search) {
+    let data = this.#database[table] ?? []
+
+    if (search) {
+      data = data.filter(row => {
+        return Object.entries(search).some(([key, value]) => {
+          return row[key].includes(value)
+        })
+      })
+    }
 
     return data
   }
@@ -30,7 +37,7 @@ export class Database {
     if (Array.isArray(this.#database[table])) {
       this.#database[table].push(data)
     } else {
-      this.#database[table] = [ data ]
+      this.#database[table] = [data]
     }
 
     this.#persist()
