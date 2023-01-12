@@ -38,33 +38,21 @@ export class Database {
     return data
   }
 
-  findUser(table, id) {
-    return this.#database[table].find((user) => user.id === id)
+  update(table, id, data) {
+    const rowIndex = this.#database[table].findIndex(row => row.id === id)
+
+    if (rowIndex > -1) {
+      this.#database[table][rowIndex] = { id, ...data }
+      this.#persist()
+    }
+  }
+
+  delete(table, id) {
+    const rowIndex = this.#database[table].findIndex(row => row.id === id)
+
+    if (rowIndex > -1) {
+      this.#database[table].splice(rowIndex, 1)
+      this.#persist()
+    }
   }
 }
-
-// const table = new Database()
-
-// table.insert('users', {
-//   id: 1,
-//   name: 'gui',
-//   age: 13
-// })
-
-// table.insert('users', {
-//   id: 2,
-//   name: 'ana',
-//   age: 10
-// })
-
-// table.insert('users', {
-//   id: 3,
-//   name: 'ju',
-//   age: 11
-// })
-
-// const search = table.select('users')
-
-// const findUser = table.findUser('users', 1)
-
-// console.log(findUser)
