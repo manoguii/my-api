@@ -1,6 +1,6 @@
 import http from 'node:http'
 
-import { json } from './middlewares/json.js'
+import { json } from './middleware/middleware.js'
 import { routes } from './routes.js'
 import { extractQueryParams } from './utils/extract-query-params.js'
 
@@ -9,7 +9,7 @@ const server = http.createServer(async (req, res) => {
 
   await json(req, res)
 
-  const route = routes.find(route => {
+  const route = routes.find((route) => {
     return route.method === method && route.path.test(url)
   })
 

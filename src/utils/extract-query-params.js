@@ -3,11 +3,14 @@
 // ['page', '2']
 
 export function extractQueryParams(query) {
-  return query.substr(1).split('&').reduce((queryParams, param) => {
-    const [key, value] = param.split('=')
+  return query
+    .substr(1)
+    .split('&')
+    .reduce((queryParams, param) => {
+      const [key, value] = param.split('=')
 
-    queryParams[key] = value
+      queryParams[key] = value
 
-    return queryParams
-  }, {})
+      return queryParams
+    }, {})
 }
