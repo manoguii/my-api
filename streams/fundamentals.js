@@ -1,8 +1,8 @@
-import { Writable, Transform } from "node:stream"
+import { Writable, Transform, Readable } from 'node:stream'
 
 class OneToHoundredStream extends Readable {
   index = 0
-  
+
   _read() {
     const i = this.index++
 
@@ -11,7 +11,7 @@ class OneToHoundredStream extends Readable {
         this.push(null)
       } else {
         const buf = Buffer.from(String(i))
-  
+
         this.push(buf)
       }
     }, 1000)
@@ -33,7 +33,7 @@ class MultiplyByTeanStream extends Writable {
 
   _write(chunk, encoding, callback) {
     this.array.push(Number(chunk.toString()) * 10)
-    
+
     console.log(this.array)
 
     callback()
@@ -41,5 +41,5 @@ class MultiplyByTeanStream extends Writable {
 }
 
 new OneToHoundredStream()
-  .pipe(new InverseNumberStream)
+  .pipe(new InverseNumberStream())
   .pipe(new MultiplyByTeanStream())
